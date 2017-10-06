@@ -22,6 +22,7 @@ import reactor.ipc.netty.http.client.HttpClient
 import reactor.ipc.netty.http.client.HttpClientException
 import reactor.ipc.netty.http.server.HttpServer
 import spock.lang.Specification
+import spock.lang.Unroll
 
 import java.time.Duration
 import java.util.concurrent.CountDownLatch
@@ -131,7 +132,8 @@ class HttpSpec extends Specification {
 	server?.dispose()
   }
 
-  def "http error with requests from clients"() {
+  @Unroll
+  def "http error with requests from clients (#iteration)"() {
 
 	when: "the server is prepared"
 
@@ -209,6 +211,9 @@ class HttpSpec extends Specification {
 	cleanup: "the client/server where stopped"
 	//note how we order first the client then the server shutdown
 	server?.dispose()
+
+    where:
+    iteration << (1..1000).toList()
   }
 
   def "WebSocket responds to requests from clients"() {
