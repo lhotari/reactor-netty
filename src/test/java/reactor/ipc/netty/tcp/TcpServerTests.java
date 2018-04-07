@@ -52,6 +52,7 @@ import io.netty.handler.codec.LineBasedFrameDecoder;
 import io.netty.handler.codec.json.JsonObjectDecoder;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.SslProvider;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 import io.netty.util.NetUtil;
@@ -391,12 +392,31 @@ public class TcpServerTests {
 	}
 
 	@Test
-	public void sendFileSecure()
+	public void sendFileSecureOpenSslServerAndJdkClient() throws InterruptedException, CertificateException, URISyntaxException, SSLException {
+		sendFileSecure(SslProvider.OPENSSL, SslProvider.JDK);
+	}
+
+	@Test
+	public void sendFileSecureJdkServerAndJdkClient() throws InterruptedException, CertificateException, URISyntaxException, SSLException {
+		sendFileSecure(SslProvider.JDK, SslProvider.JDK);
+	}
+
+	@Test
+	public void sendFileSecureJdkServerAndOpenSslClient() throws InterruptedException, CertificateException, URISyntaxException, SSLException {
+		sendFileSecure(SslProvider.JDK, SslProvider.OPENSSL);
+	}
+
+	@Test
+	public void sendFileSecureOpenSslServerAndOpenSslClient() throws InterruptedException, CertificateException, URISyntaxException, SSLException {
+		sendFileSecure(SslProvider.OPENSSL, SslProvider.OPENSSL);
+	}
+
+	private void sendFileSecure(SslProvider serverSslProvider, SslProvider clientSslProvider)
 			throws CertificateException, SSLException, InterruptedException, URISyntaxException {
 		Path largeFile = Paths.get(getClass().getResource("/largeFile.txt").toURI());
 		SelfSignedCertificate ssc = new SelfSignedCertificate();
-		SslContext sslServer = SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey()).build();
-		SslContext sslClient = SslContextBuilder.forClient().trustManager(ssc.cert()).build();
+		SslContext sslServer = SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey()).sslProvider(serverSslProvider).build();
+		SslContext sslClient = SslContextBuilder.forClient().trustManager(ssc.cert()).sslProvider(clientSslProvider).build();
 
 		NettyContext context =
 				TcpServer.create(opt -> opt.sslContext(sslServer))
