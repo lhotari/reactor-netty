@@ -36,10 +36,10 @@ import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.logging.LoggingHandler;
-
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.MonoSink;
+import reactor.ipc.netty.ContentSizeLoggingHandler;
 import reactor.ipc.netty.NettyConnector;
 import reactor.ipc.netty.NettyContext;
 import reactor.ipc.netty.NettyInbound;
@@ -367,7 +367,7 @@ public class HttpClient implements NettyConnector<HttpClientResponse, HttpClient
 	final static String         WSS_SCHEME     = "wss";
 	final static String         HTTP_SCHEME    = "http";
 	final static String         HTTPS_SCHEME   = "https";
-	final static LoggingHandler loggingHandler = new LoggingHandler(HttpClient.class);
+	final static LoggingHandler loggingHandler = new ContentSizeLoggingHandler(HttpClient.class);
 
 	@SuppressWarnings("unchecked")
 	final class TcpBridgeClient extends TcpClient implements
