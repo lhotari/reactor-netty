@@ -33,6 +33,7 @@ import io.netty.util.NetUtil;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.MonoSink;
+import reactor.ipc.netty.ContentSizeLoggingHandler;
 import reactor.ipc.netty.NettyConnector;
 import reactor.ipc.netty.NettyContext;
 import reactor.ipc.netty.NettyInbound;
@@ -232,7 +233,7 @@ public final class HttpServer
 		startAndAwait(routes, onStart);
 	}
 
-	static final LoggingHandler loggingHandler = new LoggingHandler(HttpServer.class);
+	static final LoggingHandler loggingHandler = new ContentSizeLoggingHandler(HttpServer.class);
 
 	static BiPredicate<HttpServerRequest, HttpServerResponse> compressPredicate(
 			HttpServerOptions options) {
