@@ -403,7 +403,7 @@ public class ChannelOperations<INBOUND extends NettyInbound, OUTBOUND extends Ne
 			return true;
 		}
 
-		log.error("[" + formatName() + "] Error processing connection. Requesting close the channel",
+		log.error("[" + formatName() + "] Error processing connection. " + channel()  + " Requesting close the channel",
 				err);
 		return false;
 	}
