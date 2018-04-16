@@ -140,7 +140,7 @@ final class HttpServerHandler extends ChannelDuplexHandler
 		else if (persistentConnection && pendingResponses == 0) {
 			if (HttpServerOperations.log.isDebugEnabled()) {
 				HttpServerOperations.log.debug("Dropped HTTP content, {} " +
-								"Since response has been sent already:{}",ctx.channel(), msg);
+								"Since response has been sent already:{} persistentConnection:{} pendingResponses:{}",ctx.channel(), msg, persistentConnection, pendingResponses);
 			}
 			if (msg instanceof LastHttpContent) {
 				ctx.fireChannelRead(msg);
