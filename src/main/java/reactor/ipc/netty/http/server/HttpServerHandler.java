@@ -104,8 +104,8 @@ final class HttpServerHandler extends ChannelDuplexHandler
 			if (persistentConnection) {
 				pendingResponses += 1;
 				if (HttpServerOperations.log.isDebugEnabled()) {
-					HttpServerOperations.log.debug("Increasing pending responses, now " +
-							"{}", pendingResponses);
+					HttpServerOperations.log.debug("{} Increasing pending responses, now " +
+							"{}", ctx.channel(), pendingResponses);
 				}
 				persistentConnection = isKeepAlive(request);
 			}
@@ -219,8 +219,8 @@ final class HttpServerHandler extends ChannelDuplexHandler
 				mustRecycleEncoder = false;
 				pendingResponses -= 1;
 				if (HttpServerOperations.log.isDebugEnabled()) {
-					HttpServerOperations.log.debug("Decreasing pending responses, now " +
-							"{}", pendingResponses);
+					HttpServerOperations.log.debug("{} Decreasing pending responses, now " +
+							"{}", ctx.channel(), pendingResponses);
 				}
 			}
 
