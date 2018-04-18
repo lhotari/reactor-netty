@@ -18,6 +18,7 @@ package reactor.ipc.netty.http.server;
 
 import java.util.Queue;
 
+import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelFuture;
@@ -28,6 +29,7 @@ import io.netty.handler.codec.DecoderResult;
 import io.netty.handler.codec.TooLongFrameException;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpRequest;
@@ -140,7 +142,9 @@ final class HttpServerHandler extends ChannelDuplexHandler
 		else if (persistentConnection && pendingResponses == 0) {
 			if (HttpServerOperations.log.isDebugEnabled()) {
 				HttpServerOperations.log.debug("Dropped HTTP content, {} " +
-								"Since response has been sent already:{} persistentConnection:{} pendingResponses:{}",ctx.channel(), msg, persistentConnection, pendingResponses);
+								"Since response has been sent already:{} persistentConnection:{} pendingResponses:{}\n{}",ctx.channel(), msg, persistentConnection, pendingResponses
+						, (msg instanceof HttpContent) ? ByteBufUtil
+								.prettyHexDump(((HttpContent) msg).content()) : "");
 			}
 			if (msg instanceof LastHttpContent) {
 				ctx.fireChannelRead(msg);

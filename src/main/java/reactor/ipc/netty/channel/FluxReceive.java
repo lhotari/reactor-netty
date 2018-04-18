@@ -22,8 +22,10 @@ import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufHolder;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoop;
+import io.netty.handler.codec.http.HttpContent;
 import io.netty.util.ReferenceCountUtil;
 import org.reactivestreams.Subscription;
 import reactor.core.CoreSubscriber;
@@ -145,7 +147,9 @@ final class FluxReceive extends Flux<Object> implements Subscription, Disposable
 			Object o;
 			while ((o = q.poll()) != null) {
 				if (log.isDebugEnabled()) {
-					log.debug("Dropping frame {}, {} in buffer", o, getPending());
+					log.debug("{} Dropping frame {}, {} in buffer\n{}", channel, o,
+							getPending(), (o instanceof HttpContent) ? ByteBufUtil
+									.prettyHexDump(((HttpContent) o).content()) : "");
 				}
 				ReferenceCountUtil.release(o);
 			}
